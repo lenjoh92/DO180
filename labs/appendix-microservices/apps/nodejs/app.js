@@ -1,5 +1,5 @@
 var restify = require('restify');
-
+var corsMiddleware = require('restify-cors-middleware');
 var controller = require('./controllers/items');
 
 var db = require('./models/db');
@@ -13,6 +13,10 @@ var server = restify.createServer()
     .use(restify.plugins.fullResponse())
     .use(restify.plugins.queryParser())
     .use(restify.plugins.bodyParser());
+
+const cors = corsMiddleware({ origins: ['*'] });
+server.pre(cors.preflight);
+server.use(cors.actual);
 
 controller.context(server, '/todo/api', model);
 
